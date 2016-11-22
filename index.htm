@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<!-- <script type="text/javascript" src="./lib/d3.min.js"></script>
+		<script type="text/javascript" src="./lib/topojson.min.js"></script> -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+		<script type="text/javascript" src="./lib/datamapsUSA.min.js"></script>
+		<script type="text/javascript" src="./lib/handlebars.min.js"></script>
+		<script type="text/javascript" src="./js/votingData.js"></script>
+		<script type="text/javascript" src="./js/voteCalc.js"></script>
+		<script type="text/javascript" src="./js/uiController.js"></script>
+		<link rel="stylesheet" type="text/css" href="./css/reset.css">
+		<link rel="stylesheet" type="text/css" href="./css/controls.css">
+		<link rel="stylesheet" type="text/css" href="./css/styles.css">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Electoral Distribution by Voter Demographic Group - By Eric Lee</title>
+	</head>
+
+	<body>
+		<header>
+			<h1>Electoral Distribution by Voter Demographic Group</h2>
+			<h2>By <a href="http://nokeeo.github.io" target="_blank">Eric Lee</a></h3>
+		</header>
+
+		<div style="width: 70%; margin: auto"><div id="map" style=""></div></div>
+		
+		<div id="groupSelect" class="mobileStackSplit">
+			<div class="content">
+				<table style="width: 100%">
+					<tr>
+						<td class="groupTitle" style="font-weight: bold">Group:</td>
+						<td>
+							<div class="select" onchange="UIController.categorySelectOnChange(this)">
+								<select id="categorySelect">
+									<option value="AGE">Age</option>
+									<option value="RACE">Race</option>
+								</select>
+								<div class="select__arrow"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div id="demographic" class="mobileStackSplit">
+			<div id="demographicContent" class="content">
+			</div>
+		</div>
+
+		<script>
+			UIController.setup();
+		</script>
+	</body>
+
+</html>

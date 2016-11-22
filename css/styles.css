@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond|Playfair+Display');
+
+body {
+	font-family: 'Cormorant Garamond', serif;
+}
+
+header {
+	padding: 1em;
+	padding-bottom:0px;
+}
+
+header h1 {
+	font-size: 33px;
+	font-weight: bold;
+	margin-bottom: .25em;
+}
+
+header h2 {
+	font-size: 18px;
+}
+
+a , a:visited {
+	text-decoration: underline;
+	color: black;
+}
+
+.mobileStackSplit {
+	float:left;
+	width: 100%;
+	/*border-bottom: 1px solid #d1d1d1;*/
+}
+
+.mobileStackSplit .content {
+	margin: .75em;
+}
+
+.groupTitle {
+	visibility: yes;
+	width: 50%;
+}
+
+.checkboxContainer {
+	display: block;
+}
+
+#groupSelect {
+	border-bottom: 1px solid #d1d1d1;
+}
+
+#demographic {
+	width: 50%;
+	float:right;
+}
+
+@media only screen and (min-width: 768px) {
+	header h1 {
+		font-size: 39px;
+	}
+
+	.mobileStackSplit {
+		width: 50%;
+	}
+
+	.checkboxContainer {
+		display: inline-block;
+	}
+
+	.groupTitle {
+		visibility: hidden;
+	}
+
+	#groupSelect {
+		border-bottom: 0;
+	}
+}
+
+#map {
+	/*height: 500px;
+	width: 500px;*/
+}

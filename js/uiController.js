@@ -8,10 +8,10 @@ var UIController = function() {
 	}
 
 	function __htmlForGroupCheckBoxes(topic) {
-		var templateString = '{{#answerCheckbox answers}}<label class="control control--checkbox">{{answer}}' +
-			'<input type="checkbox" class="groupCheckbox" checked="checked" value="{{answer}}" onchange="UIController.groupCheckboxOnChange(this)"/>' +
+		var templateString = '{{#each answers}}<div class="checkboxContainer"><label class="control control--checkbox">{{this.answer}}' +
+			'<input type="checkbox" class="groupCheckbox" checked="checked" value="{{this.answer}}" onchange="UIController.groupCheckboxOnChange(this)"/>' +
 			'<div class="control__indicator"></div>' + 
-			'</label>{{/answerCheckbox}}';
+			'</label></div>{{/each}}';
 		var template = Handlebars.compile(templateString);
 		return template(topic);
 	}
@@ -60,15 +60,18 @@ var UIController = function() {
 		__update();
 	}
 
-	function __htmlForPopover(stateName) {
-		var stateDistribution = uiModel.voterDistribution[stateName];
+	function __htmlForPopover(stateObj) {
+		var stateDistribution = uiModel.voterDistribution[stateObj.id];
 		if(stateDistribution != null) {
-			console.log(stateDistribution);
-			var templateString = '{{#popoverRow shares}}<tr>' + 
-			'<td>{{candidate.fname}} {{candidate.lname}}</td>' +
-			'<td>{{#partyAbbrev candidate.party}}{{/partyAbbrev}}</td>' +
-			'<td class="popoverShare">{{#percent pct}}{{/percent}}</td>' +
-			'</tr>{{/popoverRow}}';
+			var templateString = '<div class="hoverInfo"><table>' +
+				'<tr class="subtleText"><th>' + stateObj.properties.name + '</th><th>Party</th><th>Pct.*</th></tr>' + 
+				'{{#each shares}}<tr>' + 
+					'<td>{{this.candidate.fname}} {{this.candidate.lname}}</td>' +
+					'<td>{{#partyAbbrev this.candidate.party}}{{/partyAbbrev}}</td>' +
+					'<td class="popoverShare">{{#percent this.pct}}{{/percent}}</td>' +
+				'</tr>{{/each}}' +
+			'</table>' +
+			'<p class="subtleText" style="margin: .2em">*Percent of total vote</p></div>';
 			var template = Handlebars.compile(templateString);
 			return template(stateDistribution);
 		}
@@ -89,7 +92,8 @@ var UIController = function() {
 				highlightBorderColor : '#1A1A1A', 
 				highlightBorderWidth : 1,
 				popupTemplate : function(geography, data) {
-					return __htmlForPopover(geography.id);
+					console.log(geography);
+					return __htmlForPopover(geography);
 				}
 			}
 		}
@@ -109,25 +113,6 @@ var UIController = function() {
 				uiModel.map.resize(); 
 			});
 
-			Handlebars.registerHelper('answerCheckbox', function(items, options) {
-				var output = '';
-				for(var i = 0; i < items.length; i++) {
-					output += '<div class="checkboxContainer">' + options.fn(items[i]) + '</div>';
-				}
-
-				return output;
-			});
-
-			Handlebars.registerHelper('popoverRow', function(items, options) {
-				var output = '<div class="hoverInfo"><table>';
-				output += '<tr><th></th><th>Party</th><th>Pct.</th></tr>';
-				for(var i = 0; i < items.length; i++) {
-					output += options.fn(items[i]);
-				}
-
-				return output + '</table></div>';
-			});
-
 			Handlebars.registerHelper('percent', function(item, options) {
 				return (Math.trunc(item * 10000) / 100).toString() + '%';
 			});
@@ -145,7 +130,7 @@ var UIController = function() {
 					case 'GR':
 						return 'Gr.';
 					default:
-						return '-';
+						return '';
 				}
 			})
 

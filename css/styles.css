@@ -44,8 +44,12 @@ a , a:visited {
 	margin: 0;
 }
 
-.hoverInfo th {
+.subtleText {
 	color: #A3A3A3;
+}
+
+.hoverInfo th {
+	font-weight: bold;
 	text-align: left;
 	padding: .5em .4em;
 	border-bottom: 1px solid #E0E0E0;
@@ -59,6 +63,10 @@ a , a:visited {
 
 .hoverInfo td.popoverShare {
 	text-align: right;
+	font-weight: bold;
+}
+
+.hoverInfo tr:nth-child(2) td:first-child {
 	font-weight: bold;
 }
 

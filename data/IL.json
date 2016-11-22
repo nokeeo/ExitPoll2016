@@ -28,6 +28,75 @@
 			}
 		},
 		"topics": {
+			"SEX": {
+				"numrespondents": 916,
+				"qid": 279,
+				"question": "Gender",
+				"answers": [
+					{
+						"answer": "Male",
+						"pct": 50,
+						"candidateanswers": [
+							{
+								"id": 1746,
+								"pct": 50,
+								"leader": true
+							},
+							{
+								"id": 8639,
+								"pct": 43,
+								"leader": false
+							},
+							{
+								"id": 31708,
+								"pct": 5,
+								"leader": false
+							},
+							{
+								"id": 895,
+								"pct": 2,
+								"leader": false
+							},
+							{
+								"id": 0,
+								"pct": null,
+								"leader": false
+							}
+						]
+					},
+					{
+						"answer": "Female",
+						"pct": 50,
+						"candidateanswers": [
+							{
+								"id": 1746,
+								"pct": 60,
+								"leader": true
+							},
+							{
+								"id": 8639,
+								"pct": 36,
+								"leader": false
+							},
+							{
+								"id": 31708,
+								"pct": 3,
+								"leader": false
+							},
+							{
+								"id": 895,
+								"pct": 1,
+								"leader": false
+							},
+							{
+								"id": 0,
+								"pct": null,
+								"leader": false
+							}
+						]
+					}
+				]
+			},
 			"AGE": {
 				"numrespondents": 916,
 				"qid": 159,

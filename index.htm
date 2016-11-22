@@ -1,12 +1,11 @@
 <html>
 	<head>
-		<!-- <script type="text/javascript" src="./lib/d3.min.js"></script>
-		<script type="text/javascript" src="./lib/topojson.min.js"></script> -->
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+		<script type="text/javascript" src="./lib/d3.min.js"></script>
+		<script type="text/javascript" src="./lib/topojson.min.js"></script>
 		<script type="text/javascript" src="./lib/datamapsUSA.min.js"></script>
 		<script type="text/javascript" src="./lib/handlebars.min.js"></script>
 		<script type="text/javascript" src="./js/votingData.js"></script>
+		<script type="text/javascript" src="./js/electoralScale.js"></script>
 		<script type="text/javascript" src="./js/voteCalc.js"></script>
 		<script type="text/javascript" src="./js/uiController.js"></script>
 		<link rel="stylesheet" type="text/css" href="./css/reset.css">
@@ -23,6 +22,10 @@
 			<h2>By <a href="http://nokeeo.github.io" target="_blank">Eric Lee</a></h3>
 		</header>
 
+		<div id="electoralContainer">
+			<div id="electoralScaleCutPoint"></div>
+		</div>
+
 		<div style="width: 70%; margin: auto"><div id="map" style=""></div></div>
 		
 		<div id="groupSelect" class="mobileStackSplit">
@@ -34,6 +37,7 @@
 							<div class="select" onchange="UIController.categorySelectOnChange(this)">
 								<select id="categorySelect">
 									<option value="AGE">Age</option>
+									<option value="SEX">Sex</option>
 									<option value="RACE">Race</option>
 									<option value="SEXBYRACE">Sex By Race</option>
 									<option value="EDUC12R">Education</option>
@@ -44,7 +48,6 @@
 									<option value="PARTYGENDER">Sex By Party</option>
 									<option value="PHIL3">Ideology</option>
 									<option value="INCOME3">Income</option>
-									<option value="SEX">Sex</option>
 								</select>
 								<div class="select__arrow"></div>
 							</div>

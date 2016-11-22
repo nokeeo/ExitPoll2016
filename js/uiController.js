@@ -4,7 +4,13 @@ var UIController = function() {
 		topic : '',
 		groups : [],
 		map : null,
-		voterDistribution : null
+		scale : null,
+		voterDistribution : null,
+		partyColors : {
+			'R' : '#ff3f3f',
+			'D' : '#3f8fff',
+			'other' : '#DEDEDE'
+		}
 	}
 
 	function __htmlForGroupCheckBoxes(topic) {
@@ -16,9 +22,12 @@ var UIController = function() {
 		return template(topic);
 	}
 
-	function __update() {
+	function __update(voterDistribution) {
 		uiModel.voterDistribution = VotingCalc.getCandidatesDistribution(uiModel.topic, uiModel.groups);
+		var electoralData = VotingCalc.calcElectoralVotes(uiModel.voterDistribution);
+
 		VotingCalc.updateMapForDistribution(uiModel.map, uiModel.voterDistribution);
+		uiModel.scale.update(VotingCalc.calcElectoralVotes(uiModel.voterDistribution));
 	}
 
 	function __updateSelect() {
@@ -52,12 +61,12 @@ var UIController = function() {
 
 	function __categorySelectOnChange(e) {
 		__updateSelect();
-		__update();
+		__update(uiModel.voterDistribution);
 	}
 
 	function __groupCheckboxOnChange(e) {
 		__updateCheckboxes();
-		__update();
+		__update(uiModel.voterDistribution);
 	}
 
 	function __htmlForPopover(stateObj) {
@@ -92,7 +101,6 @@ var UIController = function() {
 				highlightBorderColor : '#1A1A1A', 
 				highlightBorderWidth : 1,
 				popupTemplate : function(geography, data) {
-					console.log(geography);
 					return __htmlForPopover(geography);
 				}
 			}
@@ -134,8 +142,13 @@ var UIController = function() {
 				}
 			})
 
-			__categorySelectOnChange(null);
-			__groupCheckboxOnChange(null);
+			__updateSelect()
+			uiModel.voterDistribution = VotingCalc.getCandidatesDistribution(uiModel.topic, uiModel.groups);
+			var electoralData = VotingCalc.calcElectoralVotes(uiModel.voterDistribution);
+			VotingCalc.updateMapForDistribution(uiModel.map, uiModel.voterDistribution);
+			uiModel.scale = new ElectoralScale(document.getElementById('electoralContainer'), electoralData, {
+				fillColors : uiModel.partyColors	
+			});
 		},
 	}
 }();

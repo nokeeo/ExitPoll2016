@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond|Playfair+Display');
 
 body {
-	font-family: 'Cormorant Garamond', serif;
+	font-family: "Helvetica Neue", Helvetica;
 }
 
 header {
 	padding: 1em;
 	padding-bottom:0px;
+}
+
+h1, h2 {
+	font-family: 'Cormorant Garamond', serif;
 }
 
 header h1 {
@@ -74,13 +78,64 @@ a , a:visited {
 	border-bottom: 0;
 }
 
+.electoralSlider {
+	float:left;
+	height: 100%;
+	margin: 0;
+	transition: width .25s;
+}
+
+.electoralScaleSliderLabel {
+	display: inline-block;
+	clear: both;
+}
+
+.electoralScaleVotes {
+	font-size: 6.5vw;
+	font-weight: bold;
+}
+
+.electoralScaleName {
+	font-size: 2.5vw;
+	margin: 0 .75em;
+}
+
+.electoralScalePercent {
+	font-size: 2.5vw;
+}
+
 #groupSelect {
 	border-bottom: 1px solid #d1d1d1;
 }
 
 #demographic {
+	font-family: 'Cormorant Garamond', serif;
 	width: 50%;
 	float:right;
+}
+
+#electoralContainer {
+	width: 80%;
+	margin: 2em auto;
+}
+
+#electoralScale {
+	width: 100%;
+	height: 2.5%;
+	margin: .25em 0;
+}
+
+#electoralScaleCutPoint {
+	width: 1.5px;
+	height: 100%;
+	background: white;
+	position: absolute;
+	right: 50%;
+}
+
+#electoralScaleSliderLabel {
+	position: absolute;
+	left: 0px;
 }
 
 @media only screen and (min-width: 768px) {
@@ -100,6 +155,18 @@ a , a:visited {
 	.groupTitle {
 		visibility: hidden;
 	}
+
+	.electoralScaleVotes {
+		font-size: 4.5vw;
+	}
+
+	.electoralScaleName {
+		font-size: 1.75vw;
+	}
+
+	.electoralScalePercent {
+	font-size: 1.8vw;
+}
 
 	#groupSelect {
 		border-bottom: 0;

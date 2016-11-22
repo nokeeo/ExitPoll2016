@@ -1,5 +1,73 @@
 var VotingCalc = function() {
 
+	function ElectoralData() {
+		this.states = {};
+		this.total = 538;
+		this.candidateVoteTotals = {
+			total : 0,
+			candidates : {}
+		};
+
+		function __candidateIterator(electoralData) {
+			var i = 0;
+
+			this.hasNext = function() {
+				return i < Object.keys(electoralData.candidateVoteTotals.candidates).length;
+			}
+
+			this.next = function() {
+				var candidatesKeys = Object.keys(electoralData.candidateVoteTotals.candidates);
+				var cand = electoralData.candidateVoteTotals.candidates[candidatesKeys[i]];
+				i += 1;
+				return cand;
+			}
+		}
+
+		this.partyVotes = function(partyName) {
+			var itr = new __candidateIterator(this);
+			while(itr.hasNext()) {
+				var next = itr.next();
+				if(partyName == next.candidate.party) {
+					return next.eVotes;
+				}
+			}
+
+			return 0;
+		};
+
+		this.remainingVotes = function() {
+			var sum = 0;
+			var itr = new __candidateIterator(this);
+			while(itr.hasNext()) {
+				var next = itr.next();
+				sum += next.eVotes;
+			}
+
+			return this.total - sum;
+		};
+
+		this.partyPct = function(partyName) {
+			return this.partyVotes(partyName) / this.total;
+		};
+
+		this.remainingPct = function(partyName) {
+			return this.remainingVotes(partyName) / this.total;
+		}
+
+		this.partyCandidateName = function(partyName) {
+			var itr = new __candidateIterator(this);
+			while(itr.hasNext()) {
+				var next = itr.next();
+				if(next.candidate.party == partyName) {
+					var cand = next.candidate;
+					return cand.fname + ' ' + cand.lname;
+				}
+			}
+
+			return '';
+		}
+	}
+
 	function __pctToDecimal(pct) {
 		return pct * 0.01;
 	}
@@ -237,14 +305,8 @@ var VotingCalc = function() {
 		},
 
 		calcElectoralVotes : function(candidateDistribution) {
-			var stateKeys = Object.keys(candidateDistribution.shares);
-			var electoralVotes = {
-				states : {},
-				candidateVoteTotals : {
-					total : 0,
-					candidates : {}
-				}
-			};
+			var stateKeys = Object.keys(candidateDistribution);
+			var electoralVotes = new ElectoralData();
 			for(var i = 0; i < stateKeys.length; i++) {
 				var stateName = stateKeys[i];
 				var eVotes = __getStateElectoralVotes(stateName);

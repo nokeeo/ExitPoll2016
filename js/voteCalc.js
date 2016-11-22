@@ -18,16 +18,12 @@ var VotingCalc = function() {
 		return labels;
 	}
 
-	function __fillForState(stateName) {
-		return (__haveStateData(stateName)) ? 'dem' : 'inactive';
-	}
-
 	function __genData() {
 		var data = {};
 		for(var i = 0; i < stateNames.length; i++) {
 			var stateName = stateNames[i];
 			data[stateName] = {
-				fillKey : 'inactive'
+				fillKey : 'defaultFill'
 			}
 		}
 
@@ -75,7 +71,9 @@ var VotingCalc = function() {
 				candidate : candidates[id]
 			})
 		}
-		return arr;
+		return arr.sort(function(obj1, obj2) {
+			return obj2.pct - obj1.pct;
+		});
 	}
 
 	function __concentrationForMargin(margin) {
@@ -207,29 +205,12 @@ var VotingCalc = function() {
 	}
 
 	return {
-		prepareMap : function(element) {
-			var mapData = {
-				element: element, 
-				scope: 'usa',
-				responsive: true,
-				fills : {
-					'inactive' : '#dddddd',
-					'D' : '#3f8fff',
-					'R' : '#ff3f3f'
-				},
-				geographyConfig : {
-					highlightFillColor: 'rgba(.5, .5, .5, 0)',
-					highlightBorderColor : '#1A1A1A', 
-					highlightBorderWidth : 1
-				}
-			};
-
+		prepareMap : function(mapData) {
 			mapData.data = __genData();
 			return new Datamap(mapData);
-			// map.labels({customLabelText : __genLabels()});
 		},
 
-		getCandidateSharesPerState : function(topicName, demoNames) {
+		getCandidatesDistribution : function(topicName, demoNames) {
 			var stateKeys = Object.keys(votingData);
 			var shares = {}
 			for(var i = 0; i < stateKeys.length; i++) {
@@ -291,7 +272,7 @@ var VotingCalc = function() {
 			return electoralVotes;
 		},
 
-		updateMapForDemos : function(map, candidateStateDistributions) {
+		updateMapForDistribution : function(map, candidateStateDistributions) {
 			var stateKeys = Object.keys(candidateStateDistributions);
 			var updates = {};
 			for(var i = 0; i < stateKeys.length; i++) {
@@ -301,11 +282,11 @@ var VotingCalc = function() {
 				if(winnerShare != null) {
 					// console.log(stateName);
 					var margin = __victoryMargin(winnerShare, candidateStateDistributions[stateName]);
-					updates[stateName] = __fillColorForParty(winnerShare.candidate.party, __concentrationForMargin(margin));
+					updates[stateName] = __fillColorForParty(winnerShare.candidate.party, __concentrationForMargin(margin))
 				}
 			}
 
-			__fillMissingStates(updates, {fillKey : 'inactive'})
+			__fillMissingStates(updates, {fillKey : 'defaultFill'})
 			map.updateChoropleth(updates);
 		}
 	}

@@ -41,6 +41,29 @@ a , a:visited {
 
 .checkboxContainer {
 	display: block;
+	margin: 0;
+}
+
+.hoverInfo th {
+	color: #A3A3A3;
+	text-align: left;
+	padding: .5em .4em;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.hoverInfo td {
+	color: #1F1F1F;
+	padding: .5em .25em;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.hoverInfo td.popoverShare {
+	text-align: right;
+	font-weight: bold;
+}
+
+.hoverInfo tr:last-child td {
+	border-bottom: 0;
 }
 
 #groupSelect {
@@ -63,6 +86,7 @@ a , a:visited {
 
 	.checkboxContainer {
 		display: inline-block;
+		margin-left: .75em;
 	}
 
 	.groupTitle {

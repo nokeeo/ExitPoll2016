@@ -149,6 +149,8 @@ var UIController = function() {
 			uiModel.scale = new ElectoralScale(document.getElementById('electoralContainer'), electoralData, {
 				fillColors : uiModel.partyColors	
 			});
+
+			console.log(VotingCalc.calcStatePctZScores(uiModel.voterDistribution));
 		},
 	}
 }();

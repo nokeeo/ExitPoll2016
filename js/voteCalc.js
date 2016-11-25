@@ -1,3 +1,32 @@
+function ObjectKeyIterator(obj) {
+	var i = 0;
+
+	this.hasNext = function() {
+		return i < Object.keys(obj).length;
+	}
+
+	this.next = function() {
+		var keys = Object.keys(obj);
+		var cand = obj[keys[i]];
+		i += 1;
+		return cand;
+	}
+
+	this.reset = function() {
+		i = 0;
+	}
+
+	this.forEach = function(callback) {
+		var keys = Object.keys(obj);
+		for(var i = 0; i < keys.length; i++) {
+			var key = keys[i]
+			if(callback(key, obj[key])) {
+				break;
+			}
+		}
+	}
+}
+
 var VotingCalc = function() {
 
 	function ElectoralData() {
@@ -8,23 +37,8 @@ var VotingCalc = function() {
 			candidates : {}
 		};
 
-		function __candidateIterator(electoralData) {
-			var i = 0;
-
-			this.hasNext = function() {
-				return i < Object.keys(electoralData.candidateVoteTotals.candidates).length;
-			}
-
-			this.next = function() {
-				var candidatesKeys = Object.keys(electoralData.candidateVoteTotals.candidates);
-				var cand = electoralData.candidateVoteTotals.candidates[candidatesKeys[i]];
-				i += 1;
-				return cand;
-			}
-		}
-
 		this.partyVotes = function(partyName) {
-			var itr = new __candidateIterator(this);
+			var itr = new ObjectKeyIterator(this.candidateVoteTotals.candidates);
 			while(itr.hasNext()) {
 				var next = itr.next();
 				if(partyName == next.candidate.party) {
@@ -37,7 +51,7 @@ var VotingCalc = function() {
 
 		this.remainingVotes = function() {
 			var sum = 0;
-			var itr = new __candidateIterator(this);
+			var itr = new ObjectKeyIterator(this.candidateVoteTotals.candidates);
 			while(itr.hasNext()) {
 				var next = itr.next();
 				sum += next.eVotes;
@@ -55,7 +69,7 @@ var VotingCalc = function() {
 		}
 
 		this.partyCandidateName = function(partyName) {
-			var itr = new __candidateIterator(this);
+			var itr = new ObjectKeyIterator(this.candidateVoteTotals.candidates);
 			while(itr.hasNext()) {
 				var next = itr.next();
 				if(next.candidate.party == partyName) {
@@ -272,6 +286,30 @@ var VotingCalc = function() {
 		return minMargin;
 	}
 
+	function __standardDeviation(values) {
+		var mean = __mean(values);
+		var normals = [];
+		for(var i = 0; i < values.length; i++) {
+			normals.push(Math.pow(values[i] - mean, 2))
+		}
+
+		var sd = __mean(normals);
+		return Math.sqrt(sd);
+	}
+
+	function __mean(values) {
+		if(values.length > 0) {
+			var sum = 0
+			for(var i = 0; i < values.length; i++) {
+				sum += values[i];
+			}
+
+			return sum / values.length;
+		}
+
+		return 0;
+	}
+
 	return {
 		prepareMap : function(mapData) {
 			mapData.data = __genData();
@@ -279,10 +317,9 @@ var VotingCalc = function() {
 		},
 
 		getCandidatesDistribution : function(topicName, demoNames) {
-			var stateKeys = Object.keys(votingData);
+			var stateItr = new ObjectKeyIterator(votingData);
 			var shares = {}
-			for(var i = 0; i < stateKeys.length; i++) {
-				var state = votingData[stateKeys[i]];
+			stateItr.forEach(function(stateKey, state) {
 				var topic = state.polls.topics[topicName];
 				var totalShare = 0;
 				if(topic != null) {
@@ -294,12 +331,12 @@ var VotingCalc = function() {
 							__mergeCandAnswers(candidateShare, __getNormalizedCandidateAnswers(answer));
 						}
 					}
-					shares[stateKeys[i]] = {
+					shares[stateKey] = {
 						shares : __candAnswersToArray(candidateShare, state.polls.candidates),
 						totalPct : totalShare
 					};
 				}
-			}
+			});
 
 			return shares;
 		},
@@ -334,6 +371,33 @@ var VotingCalc = function() {
 			return electoralVotes;
 		},
 
+		calcStatePctZScores: function(candidateDistribution) {
+			var stateItr = new ObjectKeyIterator(candidateDistribution);
+			var zScores = {};
+			var stateTotals = [];
+			stateItr.forEach(function(key, value) {
+				stateTotals.push(value.totalPct);
+			});
+
+			var mean = __mean(stateTotals);
+			var sd = __standardDeviation(stateTotals);
+
+			console.log(mean);
+			console.log(sd);
+
+			stateItr.reset();
+			stateItr.forEach(function(key, value) {
+				console.log(key);
+				console.log(value);
+				if(value.totalPct != null) {
+					zScores[key] = (sd > 0) ? ((value.totalPct - mean) / sd) : 0;
+				}
+			})
+
+			console.log(zScores);
+			return zScores;
+		},
+
 		updateMapForDistribution : function(map, candidateStateDistributions) {
 			var stateKeys = Object.keys(candidateStateDistributions);
 			var updates = {};
@@ -342,7 +406,6 @@ var VotingCalc = function() {
 				var winnerShare = __calcCandAnswerWinner(candidateStateDistributions[stateName].shares);
 
 				if(winnerShare != null) {
-					// console.log(stateName);
 					var margin = __victoryMargin(winnerShare, candidateStateDistributions[stateName]);
 					updates[stateName] = __fillColorForParty(winnerShare.candidate.party, __concentrationForMargin(margin))
 				}

@@ -135,18 +135,18 @@ function MapController(element) {
 
 	var map = new Datamap(mapData);
 
-	this.update = function(candidateStateDistributions) {
-		var stateKeys = Object.keys(candidateStateDistributions);
+	this.update = function(candidateDistributions) {
+		// var stateKeys = Object.keys(candidateStateDistributions);
+		var stateItr = new ObjectKeyIterator(candidateDistributions);
 		var updates = {};
-		for(var i = 0; i < stateKeys.length; i++) {
-			var stateName = stateKeys[i];
-			var winnerShare = VotingCalc.calcCandidateWinner(candidateStateDistributions[stateName].shares);
+		stateItr.forEach(function(stateName, state) {
+			var winnerShare = VotingCalc.calcCandidateWinner(state.shares);
 
 			if(winnerShare != null) {
-				var margin = __victoryMargin(winnerShare, candidateStateDistributions[stateName]);
+				var margin = __victoryMargin(winnerShare, state);
 				updates[stateName] = __fillColorForParty(winnerShare.candidate.party, _concentrationForElectoralVotes(margin))
 			}
-		}
+		});
 
 		__fillMissingStates(updates, {fillKey : 'defaultFill'})
 		map.updateChoropleth(updates);

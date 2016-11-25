@@ -26,7 +26,7 @@ var UIController = function() {
 		uiModel.voterDistribution = VotingCalc.getCandidatesDistribution(uiModel.topic, uiModel.groups);
 		var electoralData = VotingCalc.calcElectoralVotes(uiModel.voterDistribution);
 
-		VotingCalc.updateMapForDistribution(uiModel.map, uiModel.voterDistribution);
+		uiModel.map.update(uiModel.voterDistribution);
 		uiModel.scale.update(VotingCalc.calcElectoralVotes(uiModel.voterDistribution));
 	}
 
@@ -69,44 +69,6 @@ var UIController = function() {
 		__update(uiModel.voterDistribution);
 	}
 
-	function __htmlForPopover(stateObj) {
-		var stateDistribution = uiModel.voterDistribution[stateObj.id];
-		if(stateDistribution != null) {
-			var templateString = '<div class="hoverInfo"><table>' +
-				'<tr class="subtleText"><th>' + stateObj.properties.name + '</th><th>Party</th><th>Pct.*</th></tr>' + 
-				'{{#each shares}}<tr>' + 
-					'<td>{{this.candidate.fname}} {{this.candidate.lname}}</td>' +
-					'<td>{{#partyAbbrev this.candidate.party}}{{/partyAbbrev}}</td>' +
-					'<td class="popoverShare">{{#percent this.pct}}{{/percent}}</td>' +
-				'</tr>{{/each}}' +
-			'</table>' +
-			'<p class="subtleText" style="margin: .2em">*Percent of total vote</p></div>';
-			var template = Handlebars.compile(templateString);
-			return template(stateDistribution);
-		}
-
-		return '';
-	}
-
-	function __getDefaultMapData(element) {
-		return {
-			element: element, 
-			scope: 'usa',
-			responsive: true,
-			fills : {
-				defaultFill : '#dddddd',
-			},
-			geographyConfig : {
-				highlightFillColor: 'rgba(.5, .5, .5, 0)',
-				highlightBorderColor : '#1A1A1A', 
-				highlightBorderWidth : 1,
-				popupTemplate : function(geography, data) {
-					return __htmlForPopover(geography);
-				}
-			}
-		}
-	}
-
 	return {
 		categorySelectOnChange : __categorySelectOnChange,
 
@@ -115,7 +77,7 @@ var UIController = function() {
 		update : __update,
 
 		setup : function() {
-			uiModel.map = VotingCalc.prepareMap(__getDefaultMapData(document.getElementById('map')));
+			uiModel.map = new MapController(document.getElementById('map'));
 
 			window.addEventListener('resize', function() {
 				uiModel.map.resize(); 
@@ -145,12 +107,10 @@ var UIController = function() {
 			__updateSelect()
 			uiModel.voterDistribution = VotingCalc.getCandidatesDistribution(uiModel.topic, uiModel.groups);
 			var electoralData = VotingCalc.calcElectoralVotes(uiModel.voterDistribution);
-			VotingCalc.updateMapForDistribution(uiModel.map, uiModel.voterDistribution);
+			uiModel.map.update(uiModel.voterDistribution);
 			uiModel.scale = new ElectoralScale(document.getElementById('electoralContainer'), electoralData, {
 				fillColors : uiModel.partyColors	
 			});
-
-			console.log(VotingCalc.calcStatePctZScores(uiModel.voterDistribution));
 		},
 	}
 }();

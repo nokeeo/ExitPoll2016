@@ -24,11 +24,18 @@
 		</header>
 
 		<div id="electoralContainer">
-			<div id="electoralScaleCutPoint"></div>
 		</div>
 
 		<div style="width: 70%; margin: auto"><div id="map" style=""></div></div>
 		
+		<div id="modeSelector">
+				<input type="radio" id="electoral" name="mapMode" value="electoralVotes" onchange="UIController.modeChanged(this)" checked />
+				<label for="electoral">Electoral Votes</label>
+
+				<input type="radio" id="zScore" name="mapMode" value="groupInfluence" onchange="UIController.modeChanged(this)" />
+				<label for="zScore">Group Influence</label>
+		</div>
+
 		<div id="groupSelect" class="mobileStackSplit">
 			<div class="content">
 				<table style="width: 100%">

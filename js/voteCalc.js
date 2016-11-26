@@ -254,19 +254,12 @@ var VotingCalc = function() {
 			var mean = __mean(stateTotals);
 			var sd = __standardDeviation(stateTotals);
 
-			console.log(mean);
-			console.log(sd);
-
 			stateItr.reset();
 			stateItr.forEach(function(key, value) {
-				console.log(key);
-				console.log(value);
 				if(value.totalPct != null) {
 					zScores[key] = (sd > 0) ? ((value.totalPct - mean) / sd) : 0;
 				}
 			})
-
-			console.log(zScores);
 			return zScores;
 		},
 

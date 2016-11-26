@@ -92,14 +92,18 @@ function ElectoralScale(element, electoralData, uiData) {
 
 	__appendElectoralScaleTopLabelContents(electoralData, repTopLabel, 'R');
 		
-	electoralContainer.append('div')
+	var scale = electoralContainer.append('div')
 		.attr('id', 'electoralScale')
-		.selectAll('div')
+	
+	scale.selectAll('div')
 		.data(totals)
 		.enter().append('div')
 			.attr('class', 'electoralSlider')
 			.style('width', function(partyData) { return (partyData.pct * 100).toString() + '%'; })
 			.style('background', function(partyData) { return partyData.color; });
+
+	scale.append('div')
+		.attr('id', 'electoralScaleCutPoint');
 
 	var demBottomLabel = electoralContainer.append('div')
 		.attr('class', 'electoralScaleSliderLabel')

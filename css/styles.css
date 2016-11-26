@@ -117,6 +117,7 @@ a , a:visited {
 #electoralContainer {
 	width: 80%;
 	margin: 2em auto;
+	margin-bottom: 0em;
 }
 
 #electoralScale {
@@ -127,15 +128,50 @@ a , a:visited {
 
 #electoralScaleCutPoint {
 	width: 1.5px;
-	height: 100%;
-	background: white;
+	height: 2.5%;
 	position: absolute;
 	right: 50%;
+	background: white;
 }
 
 #electoralScaleSliderLabel {
 	position: absolute;
 	left: 0px;
+}
+
+#modeSelector {
+	height: 30px;
+	width: 275px;
+	margin: .75em auto;
+}
+
+#modeSelector input {
+	display: none;
+}
+
+#modeSelector label  {
+	cursor: pointer;
+	color: #454545;
+	padding: .25em .65em;
+	border: solid 1px #d1d1d1;
+	border-right: 0;
+	float:left;
+}
+
+#modeSelector label:first-of-type {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+#modeSelector label:last-of-type {
+	border-right: solid 1px #d1d1d1;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+#modeSelector input:checked + label {
+	background: #d1d1d1;
+	color: white;
 }
 
 @media only screen and (min-width: 768px) {
@@ -157,16 +193,16 @@ a , a:visited {
 	}
 
 	.electoralScaleVotes {
-		font-size: 4.5vw;
+		font-size: 3.75vw;
 	}
 
 	.electoralScaleName {
-		font-size: 1.75vw;
+		font-size: 1.45vw;
 	}
 
 	.electoralScalePercent {
-	font-size: 1.8vw;
-}
+		font-size: 1.6vw;
+	}
 
 	#groupSelect {
 		border-bottom: 0;
@@ -176,4 +212,5 @@ a , a:visited {
 #map {
 	/*height: 500px;
 	width: 500px;*/
+	margin: 0px;
 }

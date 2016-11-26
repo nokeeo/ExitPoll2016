@@ -1,4 +1,99 @@
-function MapController(element) {
+function StateZScoreMapRenderer(candidateDistribution) {
+	var zScores = VotingCalc.calcStatePctZScores(candidateDistribution);
+	this.distribution = candidateDistribution
+
+
+	this.setCandidateDistribution = function(candidateDistribution) {
+		this.distribution = candidateDistribution;
+		zScores = VotingCalc.calcStatePctZScores(this.distribution);
+	}
+
+	function __fillColorForStateZScore(zScore) {
+		if(zScore < -3.0) {
+			return '#DDDDDD';
+		}
+		else if(zScore < -2.0) {
+			return '#DDD4DD';
+		}
+		else if(zScore < -1.0) {
+			return '#DDCBDD'
+		}
+		else if(zScore < 0) {
+			return '#DDBCDD';
+		}
+		else if(zScore < 0.5) {
+			return '#DDA6DD';
+		}
+		else if(zScore < 1.0) {
+			return '#DD90DD';
+		}
+		else if(zScore < 1.5) {
+			return '#DD63DD';
+		}
+		else if(zScore < 2.0) {
+			return '#DD4DDD';
+		}
+		else {
+			return '#DD37DD';
+		}
+	}
+	
+	this.fillColorForState = function(stateName) {
+		var zScore = zScores[stateName];
+		if(zScore != null) {
+			return __fillColorForStateZScore(zScore);
+		}
+	}
+}
+
+function ElectoralVoteMapRenderer(candidateDistribution) {
+	this.distribution = candidateDistribution;
+
+	this.setCandidateDistribution = function(candidateDistribution) {
+		this.distribution = candidateDistribution;
+	}
+
+	function __fillColorForParty(party, concentration) {
+		switch(party) {
+			case 'R' : 
+				return __lightenDarkenColor('#ff3f3f', concentration);
+			case 'D' : 
+				return __lightenDarkenColor('#3f8fff', concentration);
+			case 'I' :
+				return '#923fff';
+			case 'GR' : 
+				return '#238220';
+			default :
+				return '#dddddd';
+		}
+	}
+
+	function __concentrationForElectoralVotes(margin) {
+		if(margin < .05) {
+			return 80;
+		}
+		else if(margin < .1) {
+			return 60;
+		}
+		else if(margin < .15) {
+			return 40;
+		}
+		else if(margin < .20) {
+			return 30;
+		}
+		else if(margin < .25) {
+			return 20;
+		}
+		else if(margin < .50) {
+			return 10;
+		}
+		else if(margin < .75) {
+			return 5;
+		}
+		else {
+			return 0;
+		}
+	}
 
 	/**
 	 * https://css-tricks.com/snippets/javascript/lighten-darken-color/
@@ -32,8 +127,38 @@ function MapController(element) {
   
 	}
 
+	function __victoryMargin(winner, candidateDistribution) {
+		var minMargin = 1;
+		var totalPct = candidateDistribution.totalPct;
+		for(var i = 0; i < candidateDistribution.shares.length; i++) {
+			var candidate = candidateDistribution.shares[i];
+			if(candidate.id != winner.id) {
+				var curMargin = (winner.pct / totalPct)  - (candidate.pct / totalPct);
+				minMargin = (curMargin < minMargin) ? curMargin : minMargin;
+			}
+		}
+
+		return minMargin;
+	}
+
+	this.fillColorForState = function(stateName) {
+		var state = this.distribution[stateName];
+		var winnerShare = VotingCalc.calcCandidateWinner(state.shares);
+		if(winnerShare != null) {
+			var margin = __victoryMargin(winnerShare, state);
+			return __fillColorForParty(winnerShare.candidate.party, __concentrationForElectoralVotes(margin));
+		}
+
+		return null;
+	}
+}
+
+function MapController(element) {
+
+	var renderer = null;
+
 	function __htmlForPopover(stateObj) {
-		var stateDistribution = uiModel.voterDistribution[stateObj.id];
+		var stateDistribution = renderer.distribution[stateObj.id];
 		if(stateDistribution != null) {
 			var templateString = '<div class="hoverInfo"><table>' +
 				'<tr class="subtleText"><th>' + stateObj.properties.name + '</th><th>Party</th><th>Pct.*</th></tr>' + 
@@ -60,62 +185,6 @@ function MapController(element) {
 		}
 	}
 
-	function __victoryMargin(winner, candidateDistribution) {
-		var minMargin = 1;
-		var totalPct = candidateDistribution.totalPct;
-		for(var i = 0; i < candidateDistribution.shares.length; i++) {
-			var candidate = candidateDistribution.shares[i];
-			if(candidate.id != winner.id) {
-				var curMargin = (winner.pct / totalPct)  - (candidate.pct / totalPct);
-				minMargin = (curMargin < minMargin) ? curMargin : minMargin;
-			}
-		}
-
-		return minMargin;
-	}
-
-	function __fillColorForParty(party, concentration) {
-		switch(party) {
-			case 'R' : 
-				return __lightenDarkenColor('#ff3f3f', concentration);
-			case 'D' : 
-				return __lightenDarkenColor('#3f8fff', concentration);
-			case 'I' :
-				return '#923fff';
-			case 'GR' : 
-				return '#238220';
-			default :
-				return '#dddddd';
-		}
-	}
-
-	function _concentrationForElectoralVotes(margin) {
-		if(margin < .05) {
-			return 80;
-		}
-		else if(margin < .1) {
-			return 60;
-		}
-		else if(margin < .15) {
-			return 40;
-		}
-		else if(margin < .20) {
-			return 30;
-		}
-		else if(margin < .25) {
-			return 20;
-		}
-		else if(margin < .50) {
-			return 10;
-		}
-		else if(margin < .75) {
-			return 5;
-		}
-		else {
-			return 0;
-		}
-	}
-
 	var mapData = {
 		element: element, 
 		scope: 'usa',
@@ -135,20 +204,22 @@ function MapController(element) {
 
 	var map = new Datamap(mapData);
 
-	this.update = function(candidateDistributions) {
-		// var stateKeys = Object.keys(candidateStateDistributions);
-		var stateItr = new ObjectKeyIterator(candidateDistributions);
+	this.update = function(_renderer) {
 		var updates = {};
-		stateItr.forEach(function(stateName, state) {
-			var winnerShare = VotingCalc.calcCandidateWinner(state.shares);
+		if(_renderer != null) {
+			renderer = _renderer;
+			var stateItr = new ObjectKeyIterator(renderer.distribution);
 
-			if(winnerShare != null) {
-				var margin = __victoryMargin(winnerShare, state);
-				updates[stateName] = __fillColorForParty(winnerShare.candidate.party, _concentrationForElectoralVotes(margin))
-			}
-		});
+			stateItr.forEach(function(stateName, state) {			
+				updates[stateName] = renderer.fillColorForState(stateName);
+			});
+		}
 
 		__fillMissingStates(updates, {fillKey : 'defaultFill'})
 		map.updateChoropleth(updates);
+	}
+
+	this.resize = function() {
+		map.resize();
 	}
 }

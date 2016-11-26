@@ -22,11 +22,11 @@ var UIController = function() {
 		return template(topic);
 	}
 
-	function __update(voterDistribution) {
+	function __update() {
 		uiModel.voterDistribution = VotingCalc.getCandidatesDistribution(uiModel.topic, uiModel.groups);
 		var electoralData = VotingCalc.calcElectoralVotes(uiModel.voterDistribution);
 
-		uiModel.map.update(uiModel.voterDistribution);
+		uiModel.map.update(__getRenderer(uiModel.voterDistribution));
 		uiModel.scale.update(VotingCalc.calcElectoralVotes(uiModel.voterDistribution));
 	}
 
@@ -59,6 +59,15 @@ var UIController = function() {
 		uiModel.groups = groups;
 	}
 
+	function __getNumCheckedCheckboxes(checkboxes) {
+		var total = 0;
+		for(var i = 0; i < checkboxes.length; i++) {
+			total += (checkboxes[i].checked) ? 1 : 0
+		}
+
+		return total;
+	}
+
 	function __categorySelectOnChange(e) {
 		__updateSelect();
 		__update(uiModel.voterDistribution);
@@ -69,10 +78,42 @@ var UIController = function() {
 		__update(uiModel.voterDistribution);
 	}
 
+	function __modeChanged(e) {
+		__update();
+	} 
+
+	function __rendererClassForName(name) {
+		if(name == 'groupInfluence') {
+			var demoCheckboxes = document.getElementById('demographicContent').getElementsByClassName('groupCheckbox');
+			var numCheckedDemos = __getNumCheckedCheckboxes(demoCheckboxes);
+			return (numCheckedDemos != demoCheckboxes.length && numCheckedDemos != 0) ? StateZScoreMapRenderer : null
+		}
+		else {
+			return ElectoralVoteMapRenderer;
+		}
+	}
+
+	function __getRenderer(candidateDistribution) {
+		var modeElements = document.getElementById('modeSelector').getElementsByTagName('input');
+		for(var i = 0; i < modeElements.length; i++) {
+			var modeElement = modeElements[i];
+			if(modeElement.checked) {
+				var rendererClass = __rendererClassForName(modeElement.value);
+				if(rendererClass != null) {
+					return new rendererClass(candidateDistribution);
+				}
+				break;
+			}
+		}
+		return null;
+	}
+
 	return {
 		categorySelectOnChange : __categorySelectOnChange,
 
 		groupCheckboxOnChange : __groupCheckboxOnChange,
+
+		modeChanged : __modeChanged,
 
 		update : __update,
 
@@ -107,7 +148,9 @@ var UIController = function() {
 			__updateSelect()
 			uiModel.voterDistribution = VotingCalc.getCandidatesDistribution(uiModel.topic, uiModel.groups);
 			var electoralData = VotingCalc.calcElectoralVotes(uiModel.voterDistribution);
-			uiModel.map.update(uiModel.voterDistribution);
+
+			var renderer = __getRenderer(uiModel.voterDistribution);
+			uiModel.map.update(renderer);
 			uiModel.scale = new ElectoralScale(document.getElementById('electoralContainer'), electoralData, {
 				fillColors : uiModel.partyColors	
 			});

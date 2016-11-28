@@ -187,6 +187,15 @@ var VotingCalc = function() {
 		return 0;
 	}
 
+	function __haveDataForState(shares) {
+		for(var i = 0; i < shares.length; i++) {
+			if(shares[i].pct != 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	return {
 		getCandidatesDistribution : function(topicName, demoNames) {
 			var stateItr = new ObjectKeyIterator(votingData);
@@ -203,10 +212,14 @@ var VotingCalc = function() {
 							__mergeCandAnswers(candidateShare, __getNormalizedCandidateAnswers(answer));
 						}
 					}
-					shares[stateKey] = {
-						shares : __candAnswersToArray(candidateShare, state.polls.candidates),
-						totalPct : totalShare
-					};
+
+					var candidatesShares = __candAnswersToArray(candidateShare, state.polls.candidates);
+					if(__haveDataForState(candidatesShares)) {
+						shares[stateKey] = {
+							shares :candidatesShares,
+							totalPct : totalShare,
+						};
+					}
 				}
 			});
 

@@ -39,6 +39,7 @@ a , a:visited {
 }
 
 .groupTitle {
+	font-weight: bold;
 	visibility: yes;
 	width: 50%;
 }
@@ -114,18 +115,10 @@ a , a:visited {
 	font-size: 18px;
 	margin: auto;
 	width: 80%;
-	margin-bottom: 2em;
 }
 
-#groupSelect {
+#groupSelect, #demographic {
 	border-bottom: 1px solid #d1d1d1;
-}
-
-#demographic {
-	font-family: 'Cormorant Garamond', serif;
-	width: 50%;
-	float:right;
-	margin-left: 50%;
 }
 
 #description p {
@@ -196,6 +189,10 @@ a , a:visited {
 	color: white;
 }
 
+#demographicContent {
+	font-family: 'Cormorant Garamond', serif;
+}
+
 @media only screen and (min-width: 768px) {
 	header h1 {
 		font-size: 39px;
@@ -230,12 +227,16 @@ a , a:visited {
 		font-size: 1.6vw;
 	}
 
-	#groupSelect {
+	#groupSelect, #demographic {
 		border-bottom: 0;
 	}
 
 	#demographic {
 		margin-left: 0;
+	}
+
+	#demographic .groupTitle {
+		display: none;
 	}
 }
 

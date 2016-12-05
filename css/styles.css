@@ -104,6 +104,19 @@ a , a:visited {
 	font-size: 2.5vw;
 }
 
+.bold {
+	font-weight: bold;
+}
+
+#description {
+	font-family:'Cormorant Garamond', serif;
+	line-height: 165%;
+	font-size: 18px;
+	margin: auto;
+	width: 80%;
+	margin-bottom: 2em;
+}
+
 #groupSelect {
 	border-bottom: 1px solid #d1d1d1;
 }
@@ -112,6 +125,15 @@ a , a:visited {
 	font-family: 'Cormorant Garamond', serif;
 	width: 50%;
 	float:right;
+	margin-left: 50%;
+}
+
+#description p {
+	margin: .5em 0;
+}
+
+#description .indented {
+	margin-left: 20px;
 }
 
 #electoralContainer {
@@ -178,6 +200,10 @@ a , a:visited {
 	header h1 {
 		font-size: 39px;
 	}
+	
+	header h2 {
+		font-size: 21px;
+	}
 
 	.mobileStackSplit {
 		width: 50%;
@@ -206,6 +232,10 @@ a , a:visited {
 
 	#groupSelect {
 		border-bottom: 0;
+	}
+
+	#demographic {
+		margin-left: 0;
 	}
 }
 

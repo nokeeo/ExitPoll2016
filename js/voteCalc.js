@@ -132,17 +132,21 @@ var VotingCalc = function() {
 		});
 	}
 
-	function __calcCandidateWinner(candidatesShares) {
+	function __calcCandidateWinner(candidateStateDistribution) {
 		var leaderPct = 0;
-		var leader = null; 
-		for(var i = 0; i < candidatesShares.length; i++) {
-			var share = candidatesShares[i]
+		var leader = null;
+		console.log(candidateStateDistribution);
+		var shares = candidateStateDistribution.shares;
+		for(var i = 0; i < shares.length; i++) {
+			var share = shares[i]
 			if(share.pct > leaderPct) {
 				leaderPct = share.pct;
-				leader = candidatesShares[i];
+				leader = share;
 			}
 		}
-		return leader;
+
+		var margin = __margin(leader, candidateStateDistribution);
+		return (margin > .003) ? leader : null;
 	}
 
 	function __getStateElectoralVotes(stateName) {
@@ -196,6 +200,20 @@ var VotingCalc = function() {
 		return false;
 	}
 
+	function __margin(winner, candidateStateDistribution) {
+		var minMargin = 1;
+		var totalPct = candidateStateDistribution.totalPct;
+		for(var i = 0; i < candidateStateDistribution.shares.length; i++) {
+			var candidate = candidateStateDistribution.shares[i];
+			if(candidate.id != winner.id) {
+				var curMargin = (winner.pct / totalPct)  - (candidate.pct / totalPct);
+				minMargin = (curMargin < minMargin) ? curMargin : minMargin;
+			}
+		}
+
+		return minMargin;
+	}
+
 	return {
 		getCandidatesDistribution : function(topicName, demoNames) {
 			var stateItr = new ObjectKeyIterator(votingData);
@@ -232,7 +250,7 @@ var VotingCalc = function() {
 			for(var i = 0; i < stateKeys.length; i++) {
 				var stateName = stateKeys[i];
 				var eVotes = __getStateElectoralVotes(stateName);
-				var winnerShare = __calcCandidateWinner(candidateDistribution[stateName].shares);
+				var winnerShare = __calcCandidateWinner(candidateDistribution[stateName]);
 
 				if(winnerShare != null) {
 					electoralVotes.states[stateName] = {
@@ -276,6 +294,7 @@ var VotingCalc = function() {
 			return zScores;
 		},
 
-		calcCandidateWinner : __calcCandidateWinner
+		calcCandidateWinner : __calcCandidateWinner,
+		margin : __margin
 	}
 }()

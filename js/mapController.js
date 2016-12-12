@@ -127,25 +127,11 @@ function ElectoralVoteMapRenderer(candidateDistribution) {
   
 	}
 
-	function __victoryMargin(winner, candidateDistribution) {
-		var minMargin = 1;
-		var totalPct = candidateDistribution.totalPct;
-		for(var i = 0; i < candidateDistribution.shares.length; i++) {
-			var candidate = candidateDistribution.shares[i];
-			if(candidate.id != winner.id) {
-				var curMargin = (winner.pct / totalPct)  - (candidate.pct / totalPct);
-				minMargin = (curMargin < minMargin) ? curMargin : minMargin;
-			}
-		}
-
-		return minMargin;
-	}
-
 	this.fillColorForState = function(stateName) {
 		var state = this.distribution[stateName];
-		var winnerShare = VotingCalc.calcCandidateWinner(state.shares);
+		var winnerShare = VotingCalc.calcCandidateWinner(state);
 		if(winnerShare != null) {
-			var margin = __victoryMargin(winnerShare, state);
+			var margin = VotingCalc.margin(winnerShare, state);
 			return __fillColorForParty(winnerShare.candidate.party, __concentrationForElectoralVotes(margin));
 		}
 

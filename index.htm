@@ -46,16 +46,16 @@
 							<div class="select" onchange="UIController.categorySelectOnChange(this)">
 								<select id="categorySelect">
 									<option value="AGE">Age</option>
-									<option value="SEX">Sex</option>
+									<option value="SEX">Gender</option>
 									<option value="RACE">Race</option>
-									<option value="SEXBYRACE">Sex and Race</option>
+									<option value="SEXBYRACE">Gender and Race</option>
 									<option value="INCOME3">Income</option>
 									<option value="EDUC12R">Education</option>
 									<option value="EDUCCOLL">Has College Education</option>
 									<option value="EDUCWHITE">Race and Eduction</option>
-									<option value="EDUCWHITEBYSEX">Race, Education and Sex</option>
+									<option value="EDUCWHITEBYSEX">Race, Education and Gender</option>
 									<option value="PARTY">Party</option>
-									<option value="PARTYGENDER">Sex By Party</option>
+									<option value="PARTYGENDER">Gender By Party</option>
 									<option value="PHIL3">Ideology</option>
 								</select>
 								<div class="select__arrow"></div>
@@ -80,7 +80,7 @@
 		</div>
 
 		<div id="description">
-			<p>In the wake of the hurricane that was this election cycle, I found myself wanting to dig into the exit poll data to perform my personal post mortem analysis.  I jetted over to CNN, and was greeted by a wall of spreadsheets.  After several moments of wrestling with the website to discern any sort of meaning I headed over to FOX News with hopes that they had a better visualization, but alas the same spread sheets.  The following project is a visualization designed to give insights on the political leanings of demographic groups by state and the degree of their influence per state relative to the rest of the nation.</p>
+			<p>The following project is a visualization designed to give insights on the political leanings of demographic groups by state and the degree of their influence per state relative to the rest of the nation.</p>
 
 			<p>Exit polls are designed to capture how demographic groups voted and to gauge their stance on issues important to the election.  In 2003 the National Election Pool was formed and is a consortium of the national news networks: ABC, the Associated Press, CBS, CNN, FOX News and NBC.  The news networks establish committees that are responsible for formulating the questionnaires and determine the target precincts.  The committees pass this information to the NEP, and it handles the logistics of conducting the polls.  This includes hiring and training of pollsters, surviving voters, and analyzing the results and adjusting them when necessary.  Prior to its founding, each news company was responsible for conducting its own polls.</p>
 
@@ -88,7 +88,7 @@
 
 			<p class="indented"><span class="bold">- Electoral Votes:</span> Colors the states based on which party has the majority vote.  The darker the color the larger the margin of victory.</p>
 
-			<p class="indented"><span class="bold">- Group Influence:</span> Colors the states based on percentage of the overall vote the demographic group carried in that state relative to the other state.  The darker the color the larger the turnout of that group.</p>
+			<p class="indented"><span class="bold">- Group Influence:</span> Colors the states based on percentage of the overall vote the demographic group carried in that state relative to the other states.  The darker the color the larger the turnout of that group.</p>
 
 			The data was pulled from <a href="http://www.cnn.com/election/results/exit-polls">CNN exit poll site</a> on 11-13-16.
 		</div>
